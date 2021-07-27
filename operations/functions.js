@@ -1,18 +1,20 @@
 const Subscriber=require('../models/subscriber')
+const User=require('../models/user')
 
 async function getSubscriber(id){
     let subscriber
     try{
         subscriber =await Subscriber.findById(id)
         if (subscriber == null){
-            return res.status(404).json({message:'cannot find subscriber'})
+            return
         }
     }
     catch (err) {
-        return res.status(500).json({message:err.message})
+        return 
     }
     return subscriber;
     
 }
+
 
 module.exports={getSubscriber}

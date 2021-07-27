@@ -2,6 +2,8 @@ const mongoose = require('mongoose')
  const subscriberSchema= mongoose.Schema({
      IDnumber:Number,
      task:String
+ },{
+     timestamps:true
  })
-  
- module.exports=mongoose.model('Subscriber', subscriberSchema)
+  const Subscriber=mongoose.model('Subscriber', subscriberSchema)
+ module.exports={Subscriber}
