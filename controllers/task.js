@@ -108,42 +108,84 @@ const deleteUser=async (req,res) =>
 
 const getTaskByIDcom= async (req,res)=>
 {
-    const result=await User.aggregate([{
-       $lookup:{
-            from:"subscribers",
-           localField:"IDnumber",
-            foreignField:"IDnumber",
-            as:"combination"
-        }}
+//     const result=await User.aggregate([{
+//        $lookup:{
+//             from:"subscribers",
+//            localField:"IDnumber",
+//             foreignField:"IDnumber",
+//             as:"combination"
+//         }}
      
-    ,{
-     $match: {
- "combination.IDnumber":parseInt(req.params.id)
-     }
-    },{$sort:{"combination.updatedAt":-1}}]).project({_id:0,MobileNumber:0,Name:0,createdAt:0,"combination._id":0})
+//     ,{
+//      $match: {
+//  "combination.IDnumber":parseInt(req.params.id)
+//      }
+//     },{$sort:{"combination.updatedAt":-1}}]).project({_id:0,MobileNumber:0,Name:0,createdAt:0,"combination._id":0})
 
+//     res.json(result)
+
+const result =  await User.aggregate([{
+    $lookup: {
+      from: "subscribers",
+      let: {
+        userID: "$IDnumber"
+      },
+      pipeline: [{
+          $match: { $expr: { $eq : ["$IDnumber", "$$userID"] } }
+        },
+         {
+          $sort: {  "createdAt": -1 }
+        },
+      ],
+      as: "UserTask"
+    }
+  },{
+    $match: {
+      "UserTask.IDnumber":parseInt(req.params.id)
+       }}
+])
     res.json(result)
-    
 }
 
 const getTaskByNamecom= async (req,res)=>
 {
-    const result=await User.aggregate([{
-       $lookup:{
-            from:"subscribers",
-           localField:"IDnumber",
-            foreignField:"IDnumber",
-            as:"combination"
-        }}
+//     const result=await User.aggregate([{
+//        $lookup:{
+//             from:"subscribers",
+//            localField:"IDnumber",
+//             foreignField:"IDnumber",
+//             as:"combination"
+//         }}
      
-    ,{
-     $match: {
- Name:req.params.name
-     }
-    }]).project({_id:0,MobileNumber:0,createdAt:0,"combination.createdAt":0,"combination._id":0}).sort({"updatedAt":-1})
+//     ,{
+//      $match: {
+//  Name:req.params.name
+//      }
+//     }]).project({_id:0,MobileNumber:0,createdAt:0,"combination.createdAt":0,"combination._id":0}).sort({"updatedAt":-1})
 
+//     res.json(result)
+const result =  await User.aggregate([{
+    $lookup: {
+      from: "subscribers",
+      let: {
+        userID: "$IDnumber"
+      },
+      pipeline: [{
+          $match: { $expr: { $eq : ["$IDnumber", "$$userID"] } }
+        },
+         {
+          $sort: {  "createdAt": -1 }
+        },
+      ],
+      as: "UserTask"
+    }
+  },{
+    $match: {
+      Name:req.params.name
+       }}
+])
     res.json(result)
-    
+
 }
 const gettaskby=async (req,res)=>
 {
